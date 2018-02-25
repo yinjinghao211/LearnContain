@@ -1,0 +1,5 @@
+1.github
+2.Spring xml文件在eclipse上的配置，并简单实现使用bean创建类
+3.Xshell与阿里云远程连接，在虚拟机上安装jdk1.8,安装es
+4.算法 八皇后问题复习
+5.深入理解jvm虚拟机练习

@@ -1,0 +1,128 @@
+1.移出链表中重复的值
+
+package com.hellojava.entity;
+
+import java.util.HashSet;
+
+import com.hellojava.node.Node;
+
+public class RemoveRep {
+	public void removeRep1(Node head){
+		if(head==null){
+			return;
+		}
+		HashSet<Integer> set=new HashSet<>();
+		Node pre=head;
+		Node cur=head.next;
+		set.add(head.value);
+		while(cur!=null){
+			if(set.contains(cur.value)){
+				pre.next=cur.next;
+			}else{
+				set.add(cur.value);
+				pre=cur;
+			}
+			cur=cur.next;
+		}
+	}
+	
+	public void removeRep2(Node head)
+	{
+		Node cur=head;
+		Node pre=null;
+		Node next=null;
+		while(cur!=null){
+			pre=cur;
+			next=cur.next;
+			while(next!=null){
+				if(cur.value==next.value){
+					pre.next=next.next;
+				}else{
+					pre=next;
+				}
+				next=next.next;
+			}
+			cur=cur.next;
+		}
+	}
+}
+
+@Test
+	public void func1(){
+		Random random=new Random();
+		BuildChain bc=new BuildChain();
+		for (int i = 0; i < 10; i++) {
+			bc.addFirst(random.nextInt(10));
+		}
+		bc.displayAll();
+		System.out.println();
+		RemoveRep rp=new RemoveRep();
+		//rp.removeRep1(bc.first);
+		rp.removeRep2(bc.first);
+		bc.displayAll();
+	}
+
+2.在单链表中删除指定值的节点
+
+	
+package com.hellojava.entity;
+
+import java.util.Stack;
+
+import com.hellojava.node.Node;
+
+public class RemoveValue {
+	public Node removeValue1(Node head,int num){
+		Stack<Node> stack=new Stack<>();
+		while(head!=null){
+			if(head.value!=num){
+				stack.push(head);
+			}
+			head=head.next;
+		}
+		while(!stack.isEmpty()){
+			stack.peek().next=head;
+			head=stack.pop();
+		}
+		return head;
+	}
+	
+	public Node removeValue2(Node head,int num){
+		//需要进行头值判断
+		while(head!=null){
+			if(head.value!=num){
+				break;
+			}
+			head=head.next;
+		}
+		Node pre=head;
+		Node cur=head;
+		while(cur!=null){
+			if(cur.value==num){
+				pre.next=cur.next;
+			}else{
+				pre=cur;
+			}
+			cur=cur.next;
+		}
+		return head;
+	}
+	
+}
+
+测试代码：
+	@Test
+	public void func2(){
+		Random random=new Random();
+		BuildChain bc=new BuildChain();
+		for (int i = 0; i < 10; i++) {
+			bc.addFirst(random.nextInt(10));
+		}
+		bc.displayAll();
+		System.out.println();
+		
+		RemoveValue rv=new RemoveValue();
+		//rv.removeValue1(bc.first,3);
+		rv.removeValue2(bc.first, 3);
+		bc.displayAll();
+	}

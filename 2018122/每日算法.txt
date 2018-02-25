@@ -1,0 +1,63 @@
+1.获取最大矩形窗口---求最大子矩阵的大小
+package com.hellojava.method;
+
+import java.util.Stack;
+
+public class GetMaxRecSize {
+	public int maxRecSize(int [][] map){
+		if(map==null || map.length==0 || map[0].length==0){
+			return 0;
+		}
+		int maxArea=0;
+		int [] height =new int [map.length];
+		for(int i=0;i<map.length;i++){
+			for(int j=0;j<map[0].length;j++){
+				//确定各个矩形的高度
+				height[j]=map[i][j]==0?0:height[j]+1;
+			}
+			maxArea=Math.max(maxRecFromBottom(height),maxArea);
+		}
+		return maxArea;
+	}
+	public int maxRecFromBottom(int [] height){
+		if(height==null || height.length==0){
+			return 0;
+		}
+		int maxArea=0;
+		Stack<Integer> stack=new Stack<>();
+		for(int i=0;i<height.length;i++){
+			while(!stack.isEmpty() && height[i]<=height[stack.peek()]){
+				int j=stack.pop();
+				int k=stack.isEmpty()?-1:stack.peek();
+				//求取当前矩形面积
+				int curArea=(i-k-1)*height[j];
+				//求取最大矩形面积
+				maxArea=Math.max(maxArea,curArea);
+			}
+			stack.push(i);
+		}
+		while(!stack.isEmpty()){
+			int i=stack.pop();
+			int k=stack.isEmpty()?-1:stack.peek();
+			int curArea=(height.length-k-1)*height[i];
+			maxArea=Math.max(maxArea, curArea);
+		}
+		return maxArea;
+	}
+}
+}
+
+2.测试用例：
+package com.hellojava.test;
+
+import com.hellojava.method.GetMaxRecSize;
+
+public class Test {
+	public static void main(String[] args) {
+		//通过用例
+		int [][] map={{1,1,0},{1,1,0},{1,1,1}};
+		GetMaxRecSize gmr=new GetMaxRecSize();
+		int max=gmr.maxRecSize(map);
+		System.out.println(max);
+	}
+}

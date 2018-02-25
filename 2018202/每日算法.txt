@@ -1,0 +1,210 @@
+1.判断链表是否相交，，成环，成环相交
+
+package com.hellojava.entity;
+
+import com.hellojava.node.Node;
+
+public class GetLoopNode {
+	//纯环形链表头结点既是相交节点，，非纯环形链表通过遍历fast和last直接指到相交节点
+	//判断此链表是否成环
+	public Node getLoopNode(Node head){
+		//由于引用了fast超前指针需要判断head.next.next
+		if(head==null || head.next==null || head.next.next==null){
+			return null;
+		}
+		Node n1=head.next;  //n1-->slow
+		Node n2=head.next.next; //n2-->fast
+		
+		while(n1!=n2){
+			if(n2.next==null || n2.next.next==null){
+				return null;
+			}
+			n2=n2.next.next;
+			n1=n1.next;
+		}
+		
+		n2=head;//返回头节点
+		while(n1!=n2){
+			n1=n1.next;
+			n2=n2.next;
+		}
+		//n1,n2都是头结点
+		return n1;
+	}
+	
+	//判断两个无环链表是否相交
+	public Node noLoop(Node head1,Node head2){
+		if(head1==null || head2==null){
+			return null;
+		}
+		Node cur1=head1;
+		Node cur2=head2;
+		int n=0;
+		while(cur1.next!=null){
+			n++;
+			cur1=cur1.next;
+		}
+		while(cur2.next!=null){
+			n--;
+			cur2=cur2.next;
+		}
+		//两个节点不相交
+		if(cur1!=cur2){
+			return null;
+		}
+		cur1=n>0?head1:head2;
+		cur2=cur1==head1?head2:head1;
+		n=Math.abs(n);
+		while(n!=0){
+			n--;
+			cur1=cur1.next;
+		}
+		while(cur1!=cur2){
+			cur1=cur1.next;
+			cur2=cur2.next;
+		}
+		return cur1;
+	}
+	
+	
+	//判断是那种环状链表相交情况
+							//loop1和loop2是两个环状链表的入环节点
+	public Node bothLoop(Node head1,Node loop1,Node head2,Node loop2){
+		Node cur1=null;
+		Node cur2=null;
+		
+		//在进入环之前就会相交，与上一个算法基本相同，，只不过返回的是loop1(loop2)
+		if(loop1==loop2){
+			cur1=head1;
+			cur2=head2;
+			int n=0;
+			while(cur1 != loop1){
+				n++;
+				cur1=cur1.next;
+			}
+			while(cur2 != loop2){
+				n--;
+				cur2=cur2.next;
+			}
+			//找较长的相交节点之前的链表
+			cur1=n>0?head1:head2;
+			cur2=cur1==head1?head2:head1;
+			n=Math.abs(n);
+			
+			while(n!=0){
+				n--;
+				cur1=cur1.next;
+			}
+			//使两个链表同时向共同节点移动
+			while(cur1!=cur2){
+				cur1=cur1.next;
+				cur2=cur2.next;
+			}
+			return cur1;
+		}else//直接遍历loop1找到loop2即两个相交节点在环上
+		{
+			cur1=loop1.next;
+			while(cur1!=loop1){
+				if(cur1==loop2){
+					return loop1;
+				}
+				cur1=cur1.next;
+			}
+		}
+		return null;
+	}
+	
+	public Node getIntersectNode(Node head1,Node head2){
+		if(head1==null || head2==null){
+			return null;
+		}
+		Node loop1=getLoopNode(head1);
+		Node loop2=getLoopNode(head2);
+		if(loop1==null && loop2==null){
+			return noLoop(head1, head2);
+		}
+		if(loop1!=null && loop2!=null){
+			return bothLoop(head1, loop1, head2, loop2);
+		}
+		return null;
+	}
+	
+	
+	
+	
+}
+
+
+测试用例:
+package com.helojava.test;
+
+import org.junit.Test;
+
+import com.hellojava.entity.GetLoopNode;
+import com.hellojava.node.Node;
+
+public class TestLoop {
+	@Test
+	public void func(){
+		Node node1=new Node(2);
+		Node node2=new Node(4);
+		Node node3=new Node(8);
+		Node node4=new Node(10);
+		Node node5=new Node(12);
+		Node node6=new Node(2);
+		Node node7=new Node(2);
+		Node node8=new Node(2);
+		Node node9=new Node(2);
+//		//建立有环链表
+//		node1.next=node2;
+//		node2.next=node3;
+//		node3.next=node4;
+//		node4.next=node5;
+//		node5.next=node2;
+//		
+//		
+//		Node head=node1;
+		GetLoopNode gln=new GetLoopNode();
+		
+//		Node test=gln.getLoopNode(head);
+//		
+//		System.out.println(test.value);
+		
+//		node1.next=node2;
+//		node2.next=node3;
+//		node3.next=node4;
+//		node4.next=node5;
+//		node5.next=node6;
+//		
+//		node7.next=node8;
+//		node8.next=node3;
+//		
+		//两个非环链表在node3处相交
+		
+//		Node head1=node7;
+//		Node head2=node1;
+//		
+//		Node test=gln.noLoop(head1, head2);
+//		System.out.println(test.value);
+		
+		//两个环状链表在环上相交
+		node7.next=node1;
+		node1.next=node2;
+		node2.next=node3;
+		node3.next=node4;
+		node4.next=node5;
+		node5.next=node2;
+		node8.next=node4;
+		node9.next=node8;
+		
+		Node head1=node7;
+		Node loop1=node3;
+		Node head2=node9;
+		Node loop2=node4;
+		
+		Node test=gln.bothLoop(head1, loop1, head2, loop2);
+		
+		System.out.println(test.value);
+		
+	}
+}

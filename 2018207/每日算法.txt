@@ -1,0 +1,92 @@
+1.单链表的选择排序
+package com.hellojava.entity;
+
+import com.hellojava.node.Node;
+
+public class SelectionSort {
+
+	public static Node selectionSort(Node head){
+		Node tail=null;//排序部分尾部
+		Node cur=head;//未排序部分头部
+		Node smallPre=null;//最小节点的前一个节点
+		Node small=null;//最小的节点
+		
+		while(cur!=null){
+			small=cur;//最小节点赋初值
+			smallPre=getSmallestPreNode(cur);
+			if(smallPre!=null){
+				small=smallPre.next;
+				//删除最小值节点
+				smallPre.next=small.next;
+			}
+			cur=cur==small?cur.next:cur;
+			//每次的最小值节点直接连到排好序部分的链表的尾部
+			if(tail==null){
+				head=small;
+			}else{
+				tail.next=small;
+			}
+			//把最小值链接到尾部
+			tail=small;
+		}
+		return head;
+	}
+
+	private static Node getSmallestPreNode(Node head) {
+		Node smallPre=null;
+		Node small=head;
+		Node pre=head;
+		Node cur=head.next;
+		while(cur!=null){
+			if(cur.value<small.value){
+				//small的前一个节点
+				smallPre=pre;
+				//赋值给small
+				small=cur;
+			}
+			//预存节点
+			pre=cur;
+			//遍历节点
+			cur=cur.next;
+		}
+		return smallPre;
+	}
+	
+}
+2.合并两个单链表
+
+
+package com.hellojava.entity;
+
+import com.hellojava.node.Node;
+
+public class Relocate {
+
+	public void relocate(Node head){
+		if(head==null || head.next==null){
+			return;
+		}
+		Node mid=head;
+		Node right=head.next;
+		while(right.next!=null && right.next.next!=null){
+			mid=mid.next;
+			right=right.next.next;
+		}
+		right=mid.next;
+		mid.next=null;
+		mergeLR(head,right);
+	}
+
+	private void mergeLR(Node left, Node right) {
+		Node next=null;
+		while(left.next!=null){
+			next=right.next;
+			right.next=left.next;
+			left.next=right;
+			left=right.next;
+			right=next;
+		}
+		left.next=right;
+	}
+}
+

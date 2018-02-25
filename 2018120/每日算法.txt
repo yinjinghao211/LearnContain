@@ -1,0 +1,115 @@
+1.利用栈创建MaxTree数组---(c实现)
+代码：
+
+#include<iostream.h>
+#include<vector>
+#include<stack>
+#include<map>
+using namespace std;
+struct Node{
+	int val;
+	Node* left;
+	Node* right;
+	Node(int data):val(data),left(NULL),right(NULL){}
+};
+
+//此方法找数的左(右)边的最近的比他大的数，并用map存起来
+                            //引用传参！！！
+void stackToMap(stack<Node*>& stk,map<Node*,Node*>& mapleft){
+	Node* temp=stk.top();
+	stk.pop();
+	if(stk.empty()){
+		mapleft[temp]=NULL;
+	}else{
+		mapleft[temp]=stk.top();
+	}
+}
+
+
+Node* getMaxTree(vector<int> vec){
+	vector<Node*> v;
+	for(int i;i<vec.size();i++){
+		//此方法可连续添加到vector里
+		v.push_back(new Node(vec[i]));
+	}
+	stack<Node *> stk;
+	map<Node* ,Node*> mapleft,mapright;
+	for(int i;i<vec.size();i++){
+		Node* t=v[i];
+		//循环条件：栈stk不空，stk栈顶的值小于指针t指向的变量值
+		while(!stk.empty() && stk.top()->val < t->val){
+			stackToMap(stk,mapleft);
+		}
+		stk.push(t);
+	}
+	while(!stk.empty()){
+		stackToMap(stk,mapleft);
+	}
+	//循环以上操作
+	for(int j = v.size()-1; j >= 0; j--){  
+        Node* t = v[j];  
+        while(!stk.empty() && stk.top()->val < t->val)  
+            stackToMap(stk, mapright);  
+        stk.push(t);  
+    }  
+    while(!stk.empty()){
+        stackToMap(stk, mapright);  
+	}
+    Node* head = NULL;  
+	//找到根节点
+    for(int k = 0; k < v.size(); k++){  
+        Node* current = v[k];  
+        Node* leftnode = mapleft[current];  
+        Node* rightnode = mapright[current];  
+        if(leftnode == NULL && rightnode == NULL)  
+            head = current;  
+        else if(leftnode == NULL){  
+            if(rightnode -> left == NULL)  
+                rightnode -> left = current;  
+            else  
+                rightnode -> right = current;  
+        }  
+        else if(rightnode == NULL){  
+            if(leftnode ->left == NULL)  
+                leftnode ->left = current;  
+            else  
+                leftnode ->right = current;  
+        }  
+        else{  
+            Node* parent = leftnode->val > rightnode->val? rightnode:leftnode;  
+            if(parent->left == NULL)  
+                parent->left = current;  
+            else  
+                parent->right = current;  
+        }  
+    }  
+    return head;  
+
+}
+
+void print_tree(Node* root){
+	if(root==NULL){
+		return;
+	}
+
+	print_tree(root->left);
+	cout<<root->val<<" ";
+	print_tree(root->right);
+
+}
+
+int main(int argc,const char * argv[]){
+	vector<int>vec={3,5,4,1,2};
+	Node* root =getMaxTree(vec);
+	print_tree(root);
+	return 0;
+}
+
+
+
+
+
+
+
+
+

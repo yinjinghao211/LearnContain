@@ -1,0 +1,329 @@
+
+1.如果一个数字序列逆置之后跟原序列是一样的就称这样的数字序列为回文序列。例如：
+{1, 2, 1}, {15, 78, 78, 15} , {112} 是回文序列, 
+{1, 2, 2}, {15, 78, 87, 51} ,{112, 2, 11} 不是回文序列。
+现在给出一个数字序列，允许使用一种转换操作：
+选择任意两个相邻的数，然后从序列移除这两个数，并用这两个数字的和插入到这两个数之前的位置(只插入一个和)。
+现在对于所给序列要求出最少需要多少次操作可以将其变成回文序列。
+
+输入描述:
+输入为两行，第一行为序列长度n ( 1 ≤ n ≤ 50) 第二行为序列中的n个整数item[i] (1 ≤ iteam[i] ≤ 1000)，以空格分隔。
+
+
+输出描述:
+输出一个数，表示最少需要的转换次数
+
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()) {
+            int n = scanner.nextInt();
+            int[] item = new int[n];
+            for(int i=0;i<n;i++){
+                item[i] = scanner.nextInt();
+            }
+            System.out.println(leastTimeToHuiwen(n, item));
+        }
+    }
+    public static int leastTimeToHuiwen(int n, int[] item) {
+        //比较第一个和最后一个数，如果第一个大，则前两个相加替换原来位置。
+        //如果最后一个数大，则最后两个相加替换原来位置。
+        //如果首尾元素相等，则删除首尾元素。
+        int leastTime = 0;
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for(int i=0;i<n;i++){
+            list.add(item[i]);
+        }
+        while(list.size() > 1){
+            if(list.get(0) < list.get(list.size() - 1)){
+                int a = list.get(0);
+                int b = list.get(1);
+                list.set(0, a+b);
+                list.remove(1);
+                leastTime++;
+            }
+            else if(list.get(0) > list.get(list.size() - 1)){
+                int a = list.get(list.size() - 1);
+                int b = list.get(list.size() - 2);
+                list.set(list.size() - 2, a+b);
+                list.remove(list.size() - 1);
+                leastTime++;
+            }
+            else{
+                list.remove(0);
+                list.remove(list.size() - 1);
+            }
+        }
+        return leastTime;
+    }
+
+}
+
+
+2.小易有一个圆心在坐标原点的圆，小易知道圆的半径的平方。小易认为在圆上的点而且横纵坐标都是整数的点是优雅的，小易现在想寻找一个算法计算出优雅的点的个数，请你来帮帮他。
+例如：半径的平方如果为25
+优雅的点就有：(+/-3, +/-4), (+/-4, +/-3), (0, +/-5) (+/-5, 0)，一共12个点。 
+输入描述:
+输入为一个整数，即为圆半径的平方,范围在32位int范围内。
+
+
+输出描述:
+输出为一个整数，即为优雅的点的个数
+
+
+#include<stdio.h>
+#include<math.h>
+int main(){
+    int num,r,i,j,count=0;
+    scanf("%d",&num);
+    r=(int)sqrt(num);
+    if(r*r==num){
+       for(i=1;i<r;i++){
+        for(j=r-i+1;j<r;j++){
+            if(i*i+j*j==num){
+                count++;
+            }
+        }
+    }
+    printf("%d",4*count+4);
+    }else{
+        for(i=1;i<=r;i++){
+            double n=sqrt(num-i*i);
+            j=(int)n;
+            if(j==n)
+                count++;
+        }
+        printf("%d",4*count);
+    }
+    return 0;
+}
+
+3.小易来到了一条石板路前，每块石板上从1挨着编号为：1、2、3.......
+这条石板路要根据特殊的规则才能前进：对于小易当前所在的编号为K的 石板，小易单次只能往前跳K的一个约数(不含1和K)步，即跳到K+X(X为K的一个非1和本身的约数)的位置。 小易当前处在编号为N的石板，他想跳到编号恰好为M的石板去，小易想知道最少需要跳跃几次可以到达。
+例如：
+N = 4，M = 24：
+4->6->8->12->18->24
+于是小易最少需要跳跃5次，就可以从4号石板跳到24号石板 
+
+
+输入描述:
+输入为一行，有两个整数N，M，以空格隔开。 (4 ≤ N ≤ 100000) (N ≤ M ≤ 100000)
+
+
+输出描述:
+输出小易最少需要跳跃的步数,如果不能到达输出-1
+
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()) {
+            int n = scanner.nextInt();
+            int m = scanner.nextInt();
+            System.out.println(leastJumpTime(n, m));
+        }
+    }
+
+    // 思想：动态规划
+    public static int leastJumpTime(int n, int m) {
+        if (m == n) {
+            return 0;
+        }
+        int steps = m - n + 1;// 算上了起点和终点
+        int[] dp = new int[steps];// 规划的量：到达 每个位置需要的最小步数
+        dp[0] = 0; // 起点
+        for (int i = 1; i < steps; i++) {
+            dp[i] = Integer.MAX_VALUE; // 初始化 表示后续位置都不能到达
+        }
+        for (int i = 0; i < steps; i++) {
+            // 0对应n石板 ；steps - 1 = m-n对应m石板
+            if (dp[i] == Integer.MAX_VALUE) { // 该位置不能像前走
+                dp[i] = 0;
+                continue;
+            }
+            ArrayList<Integer> list = getAppNums(i + n); // i+n才是石板号
+            for (int j = 0; j < list.size(); j++) {
+                int x = list.get(j);
+                if (i + n + x <= m) {
+                    dp[i + x] = Math.min(dp[i + x], dp[i] + 1);
+                }
+            }
+        }
+        if (dp[steps - 1] == 0) {
+            return -1;
+        } else {
+            return dp[steps - 1];
+        }
+    }
+
+    // 求因数 时间复杂度较低
+    public static ArrayList<Integer> getAppNums(int n) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i == 0) {
+                list.add(i);
+                if (n / i != i) {
+                    list.add(n / i);
+                }
+            }
+        }
+        return list;
+    }
+}
+
+4.一个只包含'A'、'B'和'C'的字符串，如果存在某一段长度为3的连续子串中恰好'A'、'B'和'C'各有一个，那么这个字符串就是纯净的，否则这个字符串就是暗黑的。例如：
+BAACAACCBAAA 连续子串"CBA"中包含了'A','B','C'各一个，所以是纯净的字符串
+AABBCCAABB 不存在一个长度为3的连续子串包含'A','B','C',所以是暗黑的字符串
+你的任务就是计算出长度为n的字符串(只包含'A'、'B'和'C')，有多少个是暗黑的字符串。 
+输入描述:
+输入一个整数n，表示字符串长度(1 ≤ n ≤ 30)
+
+
+输出描述:
+输出一个整数表示有多少个暗黑字符串
+
+#include <iostream>  
+#include <vector>  
+using namespace std;  
+  
+long long Cal(int n)  
+{  
+    if (n == 1) return 3;  
+    else if (n == 2) return 9;  
+    vector<long long> Record(9, 1), temp;  
+    for (int i = 3; i <= n; i++)  
+    {  
+        temp = Record;  
+        Record[0] = temp[0] + temp[3] + temp[6];  
+        Record[1] = temp[0] + temp[3];  
+        Record[2] = temp[0] + temp[6];  
+        Record[3] = temp[1] + temp[4];  
+        Record[4] = temp[1] + temp[4] + temp[7];  
+        Record[5] = temp[4] + temp[7];  
+        Record[6] = temp[2] + temp[8];  
+        Record[7] = temp[5] + temp[8];  
+        Record[8] = temp[2] + temp[5] + temp[8];  
+    }  
+    long long ans = 0;  
+    for (int i = 0; i < 9; i++) ans += Record[i];  
+    return ans;  
+}  
+int main()  
+{  
+    int n;  
+    cin >> n;  
+    cout << Cal(n) << endl;  
+      
+    return 0;  
+}  
+
+
+网上有另一种高效率的解法，可是运行没有通过：
+
+
+import java.util.Scanner;
+
+
+public class Main {
+    public static void main(String[] args) {
+        Integer[] result = new Integer[30];
+        result[1] = 3;
+        result[2] = 9;
+        result[3] = 21;
+
+        for(int i = 4;i < 30;i++)
+        {
+            result[i] = 2 * result[i - 1] + result[i - 2];
+        }
+
+        Scanner sc = new Scanner(System.in);
+        int num = sc.nextInt();
+
+        System.out.println(result[num]);
+    }
+}
+5.对于一个整数X，定义操作rev(X)为将X按数位翻转过来，并且去除掉前导0。例如:
+如果 X = 123，则rev(X) = 321;
+如果 X = 100，则rev(X) = 1.
+现在给出整数x和y,要求rev(rev(x) + rev(y))为多少？ 
+
+输入描述:
+输入为一行，x、y(1 ≤ x、y ≤ 1000)，以空格隔开。
+
+
+输出描述:
+输出rev(rev(x) + rev(y))的值
+
+
+
+import java.util.*;  
+public class Main{  
+    public static void main(String[] args){  
+        Scanner reader = new Scanner(System.in);  
+        int x = reader.nextInt();  
+        int y = reader.nextInt();  
+        System.out.println(rev(rev(x)+rev(y)));  
+    }  
+      
+    public static int rev(int x){  
+        StringBuffer buffer = new StringBuffer(x+"");  
+        buffer.reverse();  
+        return Integer.valueOf(buffer.toString());  
+    }  
+}  
+
+6.小易是一个数论爱好者，并且对于一个数的奇数约数十分感兴趣。一天小易遇到这样一个问题： 定义函数f(x)为x最大的奇数约数，x为正整数。 例如:f(44) = 11.
+现在给出一个N，需要求出 f(1) + f(2) + f(3).......f(N)
+例如： N = 7 
+f(1) + f(2) + f(3) + f(4) + f(5) + f(6) + f(7) = 1 + 1 + 3 + 1 + 5 + 3 + 7 = 21
+小易计算这个问题遇到了困难，需要你来设计一个算法帮助他。 
+
+输入描述:
+输入一个整数N (1 ≤ N ≤ 1000000000)
+
+
+输出描述:
+输出一个整数，即为f(1) + f(2) + f(3).......f(N)
+
+import java.util.Scanner;  
+   
+   
+public class Main{  
+       
+    public static void main(String[] args) {  
+        Scanner s=new Scanner(System.in);  
+        long num=s.nextInt();  
+        long sum=0;  
+        for(long i=num;i>0;i=i/2){  
+            long temp=(i+1)/2;  
+            sum+=temp*temp;  
+        }  
+        System.out.println(sum);  
+    }  
+}
+理解：
+因为奇数的最大奇数约数就是自己，对于偶数我们只能一直除2直到得到一个奇数即为最大奇数约数  
+   
+比如1 2 3 4 5 6 7 8 9 10  
+即n=10 ，此时奇数有1 3 5 7 9 我们把这几个奇数相加然后n/2  
+得到第二轮序列序列 1 2 3 4 5 分别对应上次的2 4 6 8 10 五个偶数，这是我们再加1 3 5  
+依次类推  
+   
+细节问题：  
+当n为偶数，就有n/2个奇数，根据等差数列求和公式 即(（首项+末项）*项数)/2,我们知道n/2个奇数和为((1+n-1)*n/2)/2,  
+即为(n/2) * (n/2),此时n为偶数，因此 (n/2) * (n/2) = ((n+1)/2)  *  ((n+1)/2)  
+   
+当n为奇数，有(n+1)/2个奇数，此时奇数和为((n+1)/2)  *  ((n+1)/2)  
+因此两种情况可以用一个等式来总结  
+

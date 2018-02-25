@@ -1,0 +1,239 @@
+1.构建双向链表
+
+package com.hellojava.node;
+
+
+/**
+ *构建双向链表
+ * @author Administrator
+ *
+
+public class DoubleLinkList {
+	private class Data{
+		private Object obj;
+		private Data left=null;
+		private Data right=null;
+		public Data(Object obj) {
+			this.obj = obj;
+		}	
+	}
+	private Data first=null;
+	private Data last=null;
+	public void insertFrist(Object obj){
+		
+		Data data=new Data(obj);
+	//  if(first == null){  
+	//      first = data;  
+	//      last = data;  
+	//  }else{  
+	//      data.right = first;  
+	//      first.left = data;  
+	//      first = data;  
+	//  }  
+		//  重构一下代码 
+		if(first==null){
+			last=data;
+		}else{
+			data.right=first;
+			first.left=data;
+		}
+		first=data;
+	}
+	public void insertLast(Object obj){
+		Data data=new Data(obj);
+		if(first==null){
+			first=data;
+		}else{
+			//挂双向链
+			last.right=data;
+			data.left=last;
+		}
+		//相当于挪指针
+		last=data;
+	}
+	public boolean insertAfter (Object target,Object obj){
+		Data data=new Data(obj);
+		Data cur=first;
+		while(cur!=null){
+			if(cur.obj.equals(target)){
+				data.right=cur.right;
+				data.left=cur;
+				if(cur==last){
+					last=data;
+				}
+				else
+				{
+					cur.right.left=data;
+				}
+				cur.right=data;
+				return true;
+			}
+			cur=cur.right;
+		}
+		return false;
+	}
+	public Object deleteFirst() throws Exception{
+		if(first==null){
+			throw new Exception("empty!");
+		}
+		//标志位
+		Data temp=first;
+		if(first.right==null){
+			//如果只有一个节点的情况，删除节点
+			first=null;
+			last=null;
+		}else{
+			//删除指向first的'指针' 
+			first.right.left=null;
+			//挂头结点
+			first=first.right;
+		}
+		return temp;
+	}
+	public Object deleteLast() throws Exception{
+		if(first==null){
+			throw new Exception("empty!");
+		}
+		Data temp=last;
+		if(first.right==null){
+			first=null;
+			last=null;
+		}else{
+			last.left.right=null;
+			last=last.left;
+		}
+		return temp;
+	}
+	public Object delete(Object obj) throws Exception{
+		if(first==null){
+			throw new Exception("empty!");
+		}
+		Data cur=first;
+		while(cur!=null){
+			if(cur.obj.equals(obj)){
+				if(cur==last){
+					last=cur.left;
+				}else{
+					cur.right.left=cur.left;
+				}
+				if(cur==first){
+					first=cur.right;
+				}else{
+					cur.left.right=cur.right;
+				}
+				return obj;
+			}
+			cur =cur.right;
+		}
+		return null;
+		
+	}
+	public void display(){
+		System.out.print("first->last:");
+		Data data=first;
+		while(data!=null){
+			System.out.print(data.obj.toString()+" -> ");
+			data=data.right;
+		}
+		System.out.print("null!");
+		
+	}
+}
+(2).测试：
+package com.helojava.test;
+
+import java.util.Random;
+
+import org.junit.Test;
+
+import com.hellojava.node.DoubleLinkList;
+
+public class Test2 {
+	@Test
+	public void func(){
+		Random random=new Random();
+		DoubleLinkList dll=new DoubleLinkList();
+		for (int i = 0; i < 10; i++) {
+			dll.insertFrist(random.nextInt(10));
+		}
+		dll.display();
+		try {
+//			dll.delete(3);
+			System.out.println();
+			//dll.insertAfter(3, 2);
+			//dll.deleteFirst();
+			dll.display();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+}
+2.移除链表倒数第k个节点
+package com.hellojava.entity;
+
+import com.hellojava.node.DoubleNode;
+import com.hellojava.node.Node;
+
+public class RemoveLastKthNode {
+	public Node removeLastKthNode(Node head,int lastKth){
+		
+		if(head==null || lastKth<1){
+			return head;
+		}
+		Node cur=head;
+		while(cur!=null){
+			//以倒数节点为基点，按负数往后++遍历
+			lastKth--;
+			cur=cur.next;
+		}
+		if(lastKth==0){
+			head=head.next;
+		}
+		if(lastKth<0){
+			cur=head;
+			while(++lastKth!=0){
+				cur=cur.next;
+			}
+			//移出cur的next值
+			cur.next=cur.next.next;
+		}
+		return head;
+		
+	}
+	
+	public DoubleNode removeLastKthNodeDoubleChain(DoubleNode head,int lastKth){
+		if(head==null || lastKth<1){
+			return head;
+		}
+		DoubleNode cur=head;
+		while(cur!=null){
+			lastKth--;
+			cur=cur.next;
+		}
+		if(lastKth== 0){
+			head=head.next;
+			head.last=null;
+		}
+		if(lastKth<0){
+			cur=head;
+			while(++lastKth!=0){
+				cur=cur.next;
+			}
+			DoubleNode newNext=cur.next.next;
+			cur.next=newNext;
+			if(newNext!=null){
+				newNext.last=cur;
+			}
+			
+		}
+		return head;
+		
+	}
+	
+	
+	
+	
+}

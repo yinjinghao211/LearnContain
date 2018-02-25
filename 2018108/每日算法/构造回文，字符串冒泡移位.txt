@@ -1,0 +1,180 @@
+1.给定一个字符串s，你可以从中删除一些字符，使得剩下的串是一个回文串。如何删除才能使得回文串最长呢？
+输出需要删除的字符个数。
+
+
+输入描述:
+
+输入数据有多组，每组包含一个字符串s，且保证:1<=s.length<=1000.
+  
+
+
+输出描述:
+
+对于每组数据，输出一个整数，代表最少需要删除的字符个数。
+
+
+
+
+代码：
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+using namespace std;
+
+const int MAXN=1010;
+int temp[MAXN][MAXN];
+
+//先求s的反串reverse，然后求他们的最长的公共子序列，要删除的字符个数就能知道
+//时间复杂度O(N^2)
+
+
+int getRemoveNumber(string &s1)
+{
+    string s2(s1);
+    reverse(s2.begin(),s2.end());
+    int len=s1.length();
+    memset(temp,0,sizeof temp);
+    for(int i=0;i<len;++i)
+    {
+        for(int j=0;j<len;++j)
+        {
+            if(s1[i]==s2[j])
+                temp[i+1][j+1]=temp[i][j]+1;
+            else temp[i+1][j+1]=max(temp[i][j+1],temp[i+1][j]);
+        }
+    }
+    return len-temp[len][len];
+}
+
+int main()
+{
+   string s;
+   while(cin>>s)
+   {
+       cout<<getRemoveNumber(s)<<endl;
+   }
+   return 0;
+}
+
+
+
+
+2.把一个字符串的大写字母放到字符串的后面，各个字符的相对位置不变，且不能申请额外的空间。
+
+
+
+输入描述:
+
+输入数据有多组，每组包含一个字符串s，且保证:1<=s.length<=1000.
+  
+
+
+输出描述:
+
+对于每组数据，输出移位后的字符串。
+
+输入例子1:
+AkleBiCeilD
+
+输出例子1:
+kleieilABCD
+
+代码：
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+  
+
+
+
+
+int main()
+{
+    char str[1000];
+    while (scanf("%s", str) != EOF)
+    {
+        int j;
+        int len = strlen(str);
+        for (int i = len - 1; i > 0; i--)
+        {
+            if (islower(str[i]))
+            {
+                j = i;
+                while(islower(str[j]) && j >= 1)
+                {
+                    j--;
+                }
+                if (j == 0 && islower(str[j]))
+                {
+                    break;
+                }
+                if (isupper(str[j]))
+                {
+                    char temp = str[j];
+                    for (int k = j; k < i; k++)
+                    {
+                        str[k] = str[k + 1];
+                    }
+                    str[i] = temp;
+                }
+            }
+        }
+        printf("%s\n", str);
+    }
+    return 0;
+}
+
+
+
+理解：
+其实就是用编程思想描述以下执行过程：
+
+
+AbCd
+
+->AbdC
+
+->bdAC
+
+
+
+这是一种执行方法，但也有另外一种执行方法：
+
+AbCd
+
+->bCdA
+
+->bdAC
+
+
+
+实现代码如下：
+
+for(i=0;i<n;i++)
+
+{
+
+    if(a[i]>'A'&&a[i]<'Z')
+
+    {
+
+             t=a[i];
+
+             for(j=i;j<n-1;j++)
+
+                 a[j]=a[j+1];
+
+             a[n-1]=t;
+
+     }
+
+     else 
+
+            break;
+
+     
+
+}
+
+
+

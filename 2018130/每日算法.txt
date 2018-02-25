@@ -1,0 +1,127 @@
+1.将链表按某值划分为左边小，中间相等，右边大的形式
+package com.hellojava.entity;
+
+import com.hellojava.node.Node;
+
+public class ListPartition {
+	public Node listPartition(Node head,int pivot){
+		if(head==null ){
+			return head;
+		}
+		Node cur=head;
+		int i=0;
+		while(cur!=null){
+			i++;
+			cur=cur.next;
+		}
+		
+		
+		Node [] nodeArr=new Node[i];
+		i=0;
+		cur=head;
+		for(i=0;i!=nodeArr.length;i++){
+			nodeArr[i]=cur;
+			cur=cur.next;
+		}		
+		arrPartition(nodeArr, pivot);
+		for (int j = 1; j != nodeArr.length; j++) {
+			nodeArr[j-1].next=nodeArr[j];
+		}
+		nodeArr[i-1].next=null;
+		return nodeArr[0];
+	}
+	
+	public void arrPartition(Node[] nodeArr,int pivot){
+		int small=-1;
+		int big=nodeArr.length;
+		int index=0;
+		while(index!=big){
+			if(nodeArr[index].value<pivot){
+				swap(nodeArr,++small, index++);
+			}else if(nodeArr[index].value==pivot){
+				index++;
+			}else{
+				swap(nodeArr,--big, index);
+			}
+		}
+	}
+	public void swap(Node [] nodeArr,int a,int b){
+		Node tem=nodeArr[a];
+		nodeArr[a]=nodeArr[b];
+		nodeArr[b]=tem;
+	}
+	
+	
+	
+	public Node listPartition2(Node head,int pivot){
+		Node sH=null;
+		Node sT=null;
+		Node eH=null;
+		Node eT=null;
+		Node bH=null;
+		Node bT=null;
+		Node next=null;
+		while(head!=null){
+			//为什么要预存节点？
+			next=head.next;
+			head.next=null;
+			if(head.value<pivot){
+				if(sH==null){
+					sH=head;
+					sT=head;
+				}else{
+					sT.next=head;
+					sT=head;
+				}
+			}else if(head.value==pivot){
+				if(eH==null){
+					eH=head;
+					eT=head;
+				}else{
+					eT.next=head;
+					eT=head;
+				}
+			}else{
+				if(bH== null){
+					bH=head;
+					bT=head;
+				}else{
+					bT.next=head;
+					bT=head;		
+				}
+			}
+			head=next;
+		}
+		
+		//小的和相等的重新连接
+		if(sT!=null){
+			sT.next=eH;
+			//判断eT是否为空，若为空eT直接返回的是sT
+			eT=eT==null ? sT:eT;
+			
+		}
+		//所有的重新连接
+		if(eT!=null){
+			eT.next=bH;
+		}
+		return sH !=null ?sH:eH !=null?eH:bH;
+	} 	
+}
+
+测试用例：
+@Test
+	public void func7(){
+		BuildChain bc=new BuildChain();
+		Random random=new Random();  
+		for (int i = 0; i < 10; i++) {
+			bc.addFirst(random.nextInt(10));
+		}
+		ListPartition lp=new ListPartition();
+		//Node head=lp.listPartition(bc.first, 5);
+		Node head=lp.listPartition2(bc.first, 5);
+		while(head!=null){
+			System.out.print(head.value+" ");
+			head=head.next;
+		}
+		
+	}

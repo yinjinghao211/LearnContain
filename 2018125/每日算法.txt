@@ -1,0 +1,145 @@
+1.删除中间节点或a/b处的节点
+
+package com.hellojava.entity;
+
+import com.hellojava.node.Node;
+
+public class RemoveMidOrRatioNode {
+	public Node removeMidNode(Node head) throws Exception{
+		if(head==null || head.next==null){
+			throw new Exception("error!");
+		}
+		if(head.next.next==null){
+			return head.next;
+		}
+		Node pre=head;
+		Node cur=head.next.next;
+		while(cur.next!=null && cur.next.next!=null){
+			pre=pre.next;
+			cur=cur.next.next;
+		}
+		pre.next=pre.next.next;
+		return head;
+	}
+	
+	public Node removeByRatio(Node head,int a,int b) throws Exception{
+		if(a<1 || a>b){
+			throw new Exception("Please input correct values!");
+		}
+		int n=0;
+		Node cur =head;
+		while(cur!=null){
+			n++;
+			cur=cur.next;
+		}
+		n=(int) Math.ceil(((double) (a*n))/(double) b);
+		if(n==1){
+			head=head.next;
+		}
+		if(n>1){
+			cur=head;
+			while(--n!=1){
+				cur=cur.next;
+			}
+			cur.next=cur.next.next;
+		}
+		return head;
+	}	
+}
+
+
+
+
+测试代码：
+package com.helojava.test;
+
+import java.util.Random;
+
+import org.junit.Test;
+
+import com.hellojava.entity.RemoveMidOrRatioNode;
+import com.hellojava.node.BuildChain;
+
+public class Test4 {
+	@Test
+	public void func(){
+		RemoveMidOrRatioNode rmr=new RemoveMidOrRatioNode();
+		Random random=new Random();
+		BuildChain bc=new BuildChain();
+		for (int i = 0; i < 10; i++) {
+			bc.addFirst(random.nextInt(10));
+		}
+		bc.displayAll();
+		try {
+			//rmr.removeMidNode(bc.first);
+			rmr.removeByRatio(bc.first, 4, 10);
+			bc.displayAll();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
+
+2.反转单向/双向链表
+
+package com.hellojava.node;
+
+public class ReverseChain {
+	public Node reverseList(Node head){
+		Node pre =null;
+		Node next=null;
+		while(head!=null){
+			next=head.next;
+			head.next=pre;
+			pre=head;
+			head=next;
+		}
+		return pre;
+	}
+	public DoubleNode reverseDoubleChain(DoubleNode head){
+		DoubleNode pre=null;
+		DoubleNode next=null;
+		while(head!=null){
+			next=head.next;
+			head.next=pre;
+			head.last=next;
+			pre=head;
+			head=next;
+		}
+		return pre;
+	}
+	
+}
+
+
+package com.helojava.test;
+
+import java.util.Random;
+
+import org.junit.Test;
+
+import com.hellojava.node.BuildChain;
+import com.hellojava.node.Node;
+import com.hellojava.node.ReverseChain;
+
+public class Text5 {
+	@Test
+	public void func(){
+		ReverseChain rc=new ReverseChain();
+		BuildChain bc=new BuildChain();
+		Random random=new Random(); 
+		int i;
+		for (i = 0; i < 10; i++) {
+			bc.addFirst(random.nextInt(10));
+		}
+		bc.displayAll();
+		Node node=rc.reverseList(bc.first);
+		while(i--!=0)
+		{
+			System.out.print(node.value+" ");
+			node=node.next;
+		}
+		
+	}
+}

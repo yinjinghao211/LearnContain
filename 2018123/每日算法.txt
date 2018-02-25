@@ -1,0 +1,154 @@
+1.打印出两个链表的公共部分
+
+(1)创建节点和创建链表的代码：
+package com.hellojava.node;
+
+
+//建立链表节点
+public class Node {
+	public int value;
+	public Node next;
+	public Node(int value) {
+		super();
+		this.value = value;
+	}
+	public void display(){
+		System.out.print(value+" ");
+	}
+}
+package com.hellojava.node;
+
+public class BuildChain {
+	public Node first;
+	private int res=0;
+	public BuildChain(){
+		//没有添加节点时显示空链
+		this.first=null;
+	}
+	//头插
+	public void addFirstNode(int data){
+		Node node=new Node(data);
+		//相当于挂链挪指针
+		node.next=first;
+		first=node;
+	}
+	//删除一个头结点，并返回头结点
+	public Node deleteFirstNode(){
+		Node tempNode=first;
+		first=tempNode.next;
+		return tempNode;
+	}
+	//在任意位置插入节点 --- 在index后面插入
+	public void add(int index,int data){
+		Node node=new Node(data);
+		Node previous=first;
+		Node current=first;
+		while(index!=res){
+			//相当于形成空间，等待插入
+			previous=current;
+			current=current.next;
+			res++;
+		}
+		node.next=current;
+		previous.next=node;
+		res=0;
+	}
+	//根据索引删除节点
+	public Node deleteByRes(int index){
+		Node current=first;
+		Node previous=first;
+		while(index!=res){
+			previous=current;
+			current=current.next;
+			res++;
+		}
+		if(current == first){
+			first=first.next;
+		}else{
+			previous.next=current.next;
+		}
+		//返回了删除的节点
+		return current;
+	}
+	//根据节点的value值删除节点
+	public Node deleteByValue(int value){
+		Node current=first;
+		Node previous=first;
+		while(current.value!=value){
+			if(current.next==null){
+				return null;
+			}
+			previous=current;
+			current=current.next;
+		}
+		if(current==first){
+			first=first.next;
+		}
+		else{
+			previous.next=current.next;
+		}
+		return current;
+	}
+	//显示所有节点
+	public void displayAllNode(){
+		Node current=first;
+		while(current!=null){
+			current.display();
+			current=current.next;
+		}
+		System.out.println("");
+	}
+}
+(2).主要功能实现的代码：
+package com.hellojava.entity;
+
+import com.hellojava.node.Node;
+
+public class PrintCommonPart {
+	public void printCommonPart(Node head1,Node head2){
+		System.out.println("Common part is");
+		while(head1.next!=null && head2.next!=null){
+			if(head1.value<head2.value){
+				head1=head1.next;
+			}else if(head1.value>head2.value){
+				head2=head2.next;
+			}else{
+				System.out.print(head2.value+" ");
+				head1=head1.next;
+				head2=head2.next;
+			}
+		}
+		System.out.println(" ");
+	}
+}
+(3).测试代码：
+package com.hellojava.text;
+
+import java.util.Random;
+
+import org.junit.Test;
+
+import com.hellojava.entity.PrintCommonPart;
+import com.hellojava.node.BuildChain;
+
+
+public class Text1 {
+	@Test
+	public void func(){
+		int i=10,j=10;
+		Random random=new Random();
+		BuildChain bc1=new BuildChain();
+		BuildChain bc2=new BuildChain();
+		while(i--!=0){
+			//获取1-10随机数
+			int result1=random.nextInt(10);
+			bc1.addFirstNode(result1);
+		}
+		while(j--!=0){
+			int result2=random.nextInt(10);
+			bc2.addFirstNode(result2);
+		}
+		PrintCommonPart pcp=new PrintCommonPart();
+		pcp.printCommonPart(bc1.first, bc2.first);
+	}
+}

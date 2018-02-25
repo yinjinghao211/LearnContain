@@ -1,0 +1,119 @@
+判断一个栈是否是回文结构
+
+package com.hellojava.entity;
+
+import java.util.Stack;
+
+import com.hellojava.node.Node;
+
+public class IsPalindrome {
+	
+	
+	//利用栈的特性----一个完整的存储的过程
+	public boolean isPalindrome1(Node head){
+		Stack<Node> stack=new Stack<>();
+		Node cur=head;
+		boolean judge=true;
+		while(cur!=null){
+			stack.push(cur);
+			cur=cur.next;
+		}
+		while(head!=null){
+			if(head.value!=stack.pop().value)
+				judge=false;
+			head=head.next;
+		}
+		return judge;
+	}
+	//利用栈的特性-----拆分为半个栈进行对比
+	public boolean isPalindrome2(Node head){
+		if(head==null || head.next==null)
+			return true;
+		Node right=head.next;
+		Node cur=head;
+		while(cur.next!=null && cur.next.next!=null){
+			right=right.next;
+			cur=cur.next.next;
+		}
+		Stack<Node> stack=new Stack<>();
+		while(right!=null){
+			stack.push(right);
+			right=right.next;
+		}
+		while(!stack.isEmpty()){
+			if(head.value!=stack.pop().value){
+				return false;
+			}
+			head=head.next;
+		}
+		return true;
+	}
+	//不需要额外的空间，额外的时间复杂度O(1),可以在时间复杂度O(n)内完成所有过程
+	public boolean isPalindrome3(Node head){
+		if(head==null  ||  head.next==null)
+			return true;
+		Node n1=head;
+		Node n2=head;
+		while(n2.next!=null && n2.next.next!=null){
+			//查找中间节点
+			n1=n1.next;
+			n2=n2.next.next;
+		}
+		n2=n1.next;//右部分的第一个节点
+		n1.next=null;//mid.next=null;
+		Node n3=null;
+		while(n2!=null){
+			//右半区反转
+			n3=n2.next;//保存下一个节点
+			n2.next=n1;//下一个反转节点
+			n1=n2;//n1移动
+			n2=n3;//n2移动
+		}
+		n3=n1;//保存最后一个节点
+		n2=head;//左边第一个节点
+		boolean res=true;
+		while(n1!=null  && n2!=null){
+			//检查回文
+			if(n1.value!=n2.value){
+				res=false;
+				break;
+			}
+			n1=n1.next;
+			n2=n2.next;
+		}
+		n1=n3.next;
+		n3.next=null;
+		while(n1!=null){
+			//恢复链表
+			n2=n1.next;
+			n1.next=n3;
+			n3=n1;
+			n1=n2;
+		}
+		return res;
+	}
+	
+	
+}
+测试用例：
+@Test
+	public void func6(){
+		BuildChain bc=new BuildChain();
+//		Random random=new Random(); 
+//		int i;
+//		for (i = 0; i < 10; i++) {
+//			bc.addFirst(random.nextInt(10));
+//		}
+		bc.addFirst(1);
+		bc.addFirst(2);
+		bc.addFirst(3);
+		bc.addFirst(2);
+		bc.addFirst(1);
+		IsPalindrome ipd=new IsPalindrome();
+		boolean bool=ipd.isPalindrome1(bc.first);
+		System.out.println(bool);
+		boolean bool1=ipd.isPalindrome2(bc.first);
+		System.out.println(bool1);
+		boolean bool2=ipd.isPalindrome3(bc.first);
+		System.out.println(bool2);
+	}

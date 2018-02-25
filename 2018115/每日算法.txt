@@ -1,0 +1,49 @@
+1.用一个栈实现另一个栈的排序
+
+package com.hellojava.stack;
+
+import java.util.Stack;
+
+public class SortStackByStack {
+	public static void sortStackByStack(Stack<Integer> stack)
+	{
+		Stack<Integer> stack1=new Stack<>();//辅助栈
+		while(!stack.isEmpty()){
+			int count=stack.pop();
+						//改变符号可以实现从小到大排列
+			while (!stack1.isEmpty() && stack1.peek() > count){
+				stack.push(stack1.pop());
+			}
+			stack1.push(count);
+		}
+		//上一步完成之后stack1实现自顶向下从大到小排列
+		while(!stack1.isEmpty()){
+			stack.push(stack1.pop());
+		}
+	}
+}
+
+
+测试用例：
+package com.hellojava.text;
+
+import java.util.Random;
+import java.util.Stack;
+
+import com.hellojava.stack.SortStackByStack;
+
+public class Test_SortStackByStack {
+
+	public static void main(String[] args) {
+		Stack<Integer> stack=new Stack<>();
+		Random r=new Random();
+		for (int i = 0; i < 10; i++) {
+			stack.push(r.nextInt());
+		}
+		SortStackByStack.sortStackByStack(stack);
+		while(!stack.isEmpty()){
+			System.out.println(stack.pop());
+		}
+	}
+
+}

@@ -1,0 +1,102 @@
+
+1.构建数组的MaxTree---用java实现
+
+package com.hellojava.test;
+
+import java.util.HashMap;
+import java.util.Stack;
+
+import com.hellojava.node.Node;
+
+public class GetMaxTree1 {
+	
+	public void popStackSetMap(Stack<Node> stack,HashMap<Node,Node> map){
+		Node popNode=stack.pop();
+		if(stack.isEmpty()){
+			map.put(popNode, null);
+		}else{
+			map.put(popNode, stack.peek());
+		}
+	}
+	
+	
+	public Node getMaxTree(int[] arr){
+		Node[] nArr=new Node[arr.length];
+		for (int i = 0; i != arr.length; i++) {
+			nArr[i] =new Node(arr[i]);
+		}
+		Stack<Node> stack=new Stack<>();
+		HashMap<Node,Node> lBigMap=new HashMap<>();
+		HashMap<Node,Node> rBigMap=new HashMap<>();
+		for (int i = 0; i != nArr.length; i++) {
+			Node curNode=nArr[i];
+			while((!stack.isEmpty()) && stack.peek().value< curNode.value)
+			{
+				popStackSetMap(stack,lBigMap);
+			}
+			stack.push(curNode);
+		}
+		while(!stack.isEmpty()){
+			popStackSetMap(stack, lBigMap);
+		}
+		for(int i=nArr.length-1;i!=-1;i-- ){
+			Node curNode=nArr[i];
+			while((!stack.isEmpty()) && stack.peek().value< curNode.value){
+				popStackSetMap(stack, rBigMap);
+			}
+			stack.push(curNode);
+		}
+		while(!stack.isEmpty()){
+			popStackSetMap(stack, rBigMap);
+		}
+		Node head=null;
+		for(int i=0;i!=nArr.length;i++){
+			Node curNode=nArr[i];
+			Node left=lBigMap.get(curNode);
+			Node right=rBigMap.get(curNode);
+			if(left==null && right==null){
+				head=curNode;
+			}else if(left==null){
+				if(right.left==null){
+					right.left=curNode;
+				}else{
+					right.right=curNode;
+				}
+			}else if(right==null){
+				if(left.left==null){
+					left.left=curNode;
+				}else{
+					left.right=curNode;
+				}
+			}else{
+				Node parent=left.value<right.value?left:right;
+				if(parent.left==null){
+					parent.left=curNode;
+				}else{
+					parent.right=curNode;
+				}
+			}
+		}
+		return head;
+	}
+	
+}
+
+
+测试代码：
+package com.hellojava.entity;
+
+import com.hellojava.node.Node;
+import com.hellojava.test.GetMaxTree1;
+
+public class Test {
+
+	public static void main(String[] args) {
+		int arr[]={4,2,3,1,5};
+		GetMaxTree1 gmt=new GetMaxTree1();
+		Node node=gmt.getMaxTree(arr);
+		//输出根节点
+		System.out.println(node.value);
+	}
+
+}

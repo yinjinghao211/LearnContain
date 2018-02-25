@@ -1,0 +1,61 @@
+1.两个链表相加，生成新链表
+
+public class AddLists {
+	public Node addList1(Node head1,Node head2){
+		Stack<Integer> s1=new Stack<>();
+		Stack<Integer> s2=new Stack<>();
+		while(head1!=null){
+			s1.push(head1.value);
+			head1=head1.next;
+		}
+		while(head2!=null){
+			s2.push(head2.value);
+			head2=head2.next;
+		}
+		int ca=0;
+		int n1=0;
+		int n2=0;
+		int n=0;
+		Node node=null;
+		Node pre=null;
+		while(!s1.isEmpty() || !s2.isEmpty()){
+			n1=s1.isEmpty()? 0:s1.pop();
+			n2=s2.isEmpty()? 0:s2.pop();
+			n=n1+n2+ca;
+			pre=node;
+			node=new Node(n%10);
+			node.next=pre;
+			ca=n/10;
+		}
+		if(ca==1){
+			pre=node;
+			node=new Node(1);
+			node.next=pre;
+		}
+		return node;
+	}
+}
+测试用例：
+@Test
+	public void func10(){
+		Random random=new Random();
+		//创建两个链表
+		BuildChain bc1=new BuildChain();
+		for (int i = 0; i < 10; i++) {
+			bc1.addFirst(random.nextInt(10));
+		}
+		bc1.displayAll();
+		BuildChain bc2=new BuildChain();
+		for (int i = 0; i < 10; i++) {
+			bc2.addFirst(random.nextInt(10));
+		}
+		bc2.displayAll();
+		AddLists al=new AddLists();
+		Node first=al.addList1(bc1.first, bc2.first);
+		
+		while(first!=null){
+			System.out.print(first.value+" ");
+			first=first.next;
+		}
+		
+	}

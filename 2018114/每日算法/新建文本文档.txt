@@ -1,0 +1,170 @@
+
+1.利用递归函数逆序一个栈
+
+package com.hellojava.stack;
+
+import java.util.Stack;
+
+public class ReverseStack {
+	public static Integer getAndRemoveStackLastElement(Stack<Integer> stack){
+		int count=stack.pop();
+		if(stack.isEmpty()){
+			return count;
+		}else{
+			int last=getAndRemoveStackLastElement(stack);//获取栈底元素,测试数据为2--最先压入栈的元素
+			stack.push(count);//此时栈顶元素为3
+			return last;
+		}
+	}
+	
+	public static void reverse(Stack<Integer> stack){
+		if(stack.isEmpty()){
+			return;
+		}
+		int i=getAndRemoveStackLastElement(stack);
+		reverse(stack);
+		stack.push(i);//直至return 之后不断递归入栈
+	}
+	
+}
+
+
+测试：
+package com.hellojava.text;
+
+import java.util.Stack;
+
+import com.hellojava.stack.ReverseStack;
+
+public class Test_ReverseStack {
+	public static void main(String[] args) {
+		Stack<Integer> stack=new Stack<Integer>();
+		stack.push(2);
+		stack.push(3);
+		stack.push(1);
+		stack.push(9);
+		ReverseStack.reverse(stack);
+		while(stack.isEmpty())
+		{
+			System.out.println(stack.pop());
+		}
+	}
+}
+2.猫狗队列
+
+主要实现代码：
+
+package com.hellojava.entity;
+
+import java.util.Queue;
+
+import com.hellojava.entity.impl.Cat;
+import com.hellojava.entity.impl.Dog;
+
+public interface Pet {
+	public void add(Pet pet,Queue<Pet> query);
+	public static void pollAll(Queue<Pet> query){
+		if(query.isEmpty()){
+			new RuntimeException("此队列为空");
+		}
+		while(!query.isEmpty()){
+			System.out.println(query.poll());
+		}
+	}
+	public static void poolDog(Queue<Pet> query){
+		if(query.isEmpty()){
+			new RuntimeException("此队列为空");
+		}
+		while(!query.isEmpty()){
+			Pet pet=query.poll();
+		if(pet instanceof Dog){
+			System.out.println(pet);
+		}
+		}
+	}
+	public static void poolCat(Queue<Pet> query){
+		if(query.isEmpty()){
+			new RuntimeException("此队列为空");
+		}
+		while(!query.isEmpty()){
+			Pet pet=query.poll();
+		if(pet instanceof Cat){
+			System.out.println(pet);
+		}
+		}
+	}
+	
+	public static void isEmpty(Queue<Pet> query){
+		if(query.isEmpty()){
+			new RuntimeException("此队列为空");
+		}else{
+			System.out.println("此队列还有元素");
+			Pet.pollAll(query);
+		}
+	}
+	
+	public static void isDogEmpty(Queue<Pet> query){
+		
+		if(!query.isEmpty())
+		{
+			Pet pet=query.poll();
+			if(pet instanceof Dog){
+				System.out.println("此队列仍然含有Dog的实例");
+			}
+		}
+		else{
+			System.out.println("此队列没有Dog的实例");
+		}
+	}
+	public static void isCatEmpty(Queue<Pet> query){
+		
+		if(!query.isEmpty())
+		{
+			Pet pet=query.poll();
+			if(pet instanceof Cat){
+				System.out.println("此队列仍然含有Cat的实例");
+			}
+		}
+		else{
+			System.out.println("此队列没有Cat的实例");
+		}
+	}
+	
+	
+	
+	
+	
+}
+测试代码：
+package com.hellojava.test;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+import com.hellojava.entity.Pet;
+import com.hellojava.entity.impl.Cat;
+import com.hellojava.entity.impl.Dog;
+
+public class Test_CatDogQueue {
+
+	public static void main(String[] args) {
+		Queue<Pet> queue=new LinkedList<>();
+		Cat cat1=new Cat("windy1", "blue");
+		Cat cat2=new Cat("windy2", "blue");
+		Cat cat3=new Cat("windy3", "blue");
+		Dog dog1=new Dog("cindy1", "white");
+		Dog dog2=new Dog("cindy2", "white");
+		Dog dog3=new Dog("cindy3", "white");
+		queue.add(cat1);
+		queue.add(cat2);
+		queue.add(cat3);
+		queue.add(dog1);
+		queue.add(dog2);
+		queue.add(dog3);		
+		//Pet.pollAll(queue);
+		//Pet.poolDog(queue);
+		Pet.poolCat(queue);
+		Pet.isDogEmpty(queue);
+	}
+
+}

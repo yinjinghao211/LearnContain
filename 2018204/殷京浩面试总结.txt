@@ -1,0 +1,57 @@
+今天面试主要问了cookie与session的概念，https与http的区别，以及http的状态码，get与post的各自的安全性以及其他方法，例如head
+
+总结如下：
+	面试之后我把被问到的知识点整理了一下,发现了我自己还有很多知识点没有掌握，对基础概念的理解不深，许多概念模糊不清，这一段时间在做项目也使我感觉自己的知识储备很少，电话过后我查阅了相关资料，理清了一些概念，总结了下面的几个知识点：
+
+	参考链接：http://blog.csdn.net/duan1078774504/article/details/51912868
+	         https://www.cnblogs.com/wqhwe/p/5407468.html
+		http://www.w3school.com.cn/tags/html_ref_httpmethods.asp
+
+1.session与cookie的区别和联系
+
+	session是存放在服务器端的，类似于Session结构来存放用户数据，当浏览器 第一次发送请求时，服务器自动生成了一个Session和一个Session ID用来唯一标识这个Session，一般session的默认存活时间是30min
+	session客户端的实现形式：(1)使用cookie保存，可以设置cookie过期时间使cookie可以保存到硬盘上
+				(2)使用URL附加信息的方式，这种和第一种实现形式是一样的
+				(3)表单里增加隐藏域，与第二种区别就是上一种是通过post传参，此方式是通过post传参
+	session与cookie的区别：cookie保存在客户端，session保存在服务器端，Cookies是属于Session对象的一种
+2.http与https的区别
+
+	HTTP：是互联网上应用最为广泛的一种网络协议，是一个客户端和服务器端请求和应答的标准（TCP），用于从WWW服务器传输超文本到本地浏览器的传输协议，它可以使浏览器更加高效，使网络传输减少。
+
+	HTTPS：是以安全为目标的HTTP通道，简单讲是HTTP的安全版，即HTTP下加入SSL层，SSL依靠证书来验证服务器的身份，并为浏览器和服务器之间的通信加密，HTTPS的安全基础是SSL，因此加密的详细内容就需要SSL。
+
+	HTTPS协议的主要作用可以分为两种：一种是建立一个信息安全通道，来保证数据传输的安全；另一种就是确认网站的真实性。
+
+3.两种最常用的http方法：get和post方法
+
+
+ 			GET					POST
+后退按钮/刷新		无害				数据会被重新提交（浏览器应该告知用户数据会被重新提交）。
+书签			可收藏为书签			不可收藏为书签
+缓存			能被缓存				不能缓存
+编码类型		application/x-www-form-urlencoded	application/x-www-form-urlencoded 或 multipart/form-data。为二进制数据使用多重编码。
+历史			参数保留在浏览器历史中。		参数不会保存在浏览器历史中。
+对数据长度的限制		是的。当发送数据时，GET 方法向 URL 添加数据；URL 的长度是受限制的（URL 的最大长度是 2048 个字符）。	无限制。
+对数据类型的限制		只允许 ASCII 字符。		没有限制。也允许二进制数据。
+	
+与 POST 相比，GET 的安全性较差，因为所发送的数据是 URL 的一部分。
+
+在发送密码或其他敏感信息时绝不要使用 GET ！
+
+POST 比 GET 更安全，因为参数不会被保存在浏览器历史或 web 服务器日志中。	数据在 URL 中对所有人都是可见的。	数据不会显示在 URL 中。
+
+
+其他 HTTP 请求方法
+下面的表格列出了其他一些 HTTP 请求方法：
+
+方法	描述
+HEAD	与 GET 相同，但只返回 HTTP 报头，不返回文档主体。
+PUT	上传指定的 URI 表示。
+DELETE	删除指定资源。
+OPTIONS	返回服务器支持的 HTTP 方法。
+CONNECT	把请求连接转换到透明的 TCP/IP 通道。
+
+
+	
+	
+	
