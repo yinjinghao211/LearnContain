@@ -1,0 +1,24 @@
+package com.hellojava.fun1;
+
+public class Func4 {
+	
+	public static void main(String[] args) {
+		System.out.println(transport(3, 5));
+	}
+	
+	
+	public static int transport(int a,int b){
+		
+		if(a==0) return b;
+		if(b==0) return a;
+		
+		int sum,i;
+		
+		i=a^b;
+		
+		sum=(a&b)<<1;
+		
+		return transport(sum,i);
+		
+	}
+}
