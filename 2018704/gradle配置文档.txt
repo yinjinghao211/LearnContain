@@ -1,0 +1,11 @@
+需要jdk1.8,idea17以上，电脑安装gradle(配置环境变量，与配置java类似)，用gitpush下项目，开始操作
+
+
+gradle配置本地仓库位置：添加环境变量GRADLE_USER_HOME
+
+
+1.File-Open-settings.gradle  以导入service-member项目为例
+
+2.导入之后可能会报错 ---Settings-Plugins,下载插件Lombok Plugin,应用并重启idea
+
+3.需要启用注解 Annotation Processors
