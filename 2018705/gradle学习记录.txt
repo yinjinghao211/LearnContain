@@ -1,0 +1,96 @@
+//https://github.com/davenkin/gradle-learning
+//task helloworld << {
+//    println "hello world!"
+//}
+/*
+这里的“<<”表示向helloWorld中加入执行代码，其实就是groovy代码。
+Gradle向我们提供了一整套DSL，所以在很多时候我们写的代码似乎已经脱离了groovy，但是在底层依然是执行的groovy。
+比如上面的task关键字，其实就是一个groovy中的方法，而大括号之间的内容则表示传递给task方法的一个闭包。
+除了“<<”之外，我们还很多种方式可以定义一个Task，我们将在系列后续的文章中讲到。
+在与build.gradle相同的目录下执行：gradle helloworld/
+ */
+
+
+// Gradle的Project从本质上说只是含有多个Task的容器，一个Task与Ant的Target相似，表示一个逻辑执行单元。我们可以通过
+//很多种方式定义Task，所有的Task都存放在Project的TaskContainer中。
+//task hello1 << {
+//    println "hello1"
+//}
+//
+//task hello2 << {
+//    doLast {
+//        println "hello2"
+//    }
+//}
+//
+//task hello3 << {
+//    doFirst {
+//        println "hello3"
+//    }
+//}
+
+/*
+* 在上面的3个例子中，Gradle的DSL向我们展示了一种非常自然的风格来创建Task，而事实上这些都只是一种内部DSL，也即必须符合groovy的语法要求。
+上面的task关键字实际上是一个方法调用，该方法属于Project。Project中存在多个重载的task()方法完成多种类型的Task创建。
+
+以上我们自定义的3个Task都位于TaskContainer中，Project中的tasks即表示该TaskContainer。为此，我们可以新建一个Task来显示这些信息：
+* */
+
+//上面的DefaultTaskContainer_Decorated表示tasks类型，而4表示该TaskContainer中包含有4个自定义的Task——包括showTasks。
+
+//task showtasks << {
+//    println tasks.class
+//    println tasks.size()
+//}
+
+//task showDescription1 << {
+//    description = 'this is task showDescription'
+//    println description
+//}
+
+//task showDescription2 << {
+//    println description
+//}
+//showDescription2.description = 'this is task showDescription'
+
+//
+//task showDescription3 << {
+//    println description
+//}
+//showDescription3 {
+//    description = 'this is task showDescription'
+//}
+
+//class GroovyBeanExample {
+//    private String name
+//}
+//
+//def bean = new GroovyBeanExample()
+//bean.name = 'this is name'
+//println bean.name
+
+/**
+ * 如果我们将Gradle的Task看作一个黑盒子，那么我们便可以抽象出输入和输出的概念，一个Task对输入进行操作，然后产生输出。比如，在使用java插件编译源代码时，输入即为Java源文件，输出则为class文件。如果多次执行一个Task时的输入和输出是一样的，那么我们便可以认为这样的Task是没有必要重复执行的。此时，反复执行相同的Task是冗余的，并且是耗时的。
+
+ 为了解决这样的问题，Gradle引入了增量式构建的概念。在增量式构建中，我们为每个Task定义输入（inputs）和输入（outputs），如果在执行一个Task时，它的输入和输出与前一次执行时没有发生变化，那么Gradle便会认为该Task是最新的（UP-TO-DATE），因此Gradle将不予执行。一个Task的inputs和outputs可以是一个或多个文件，可以是文件夹，还可以是Project的某个Property，甚至可以是闭包所定义的条件。
+
+ 每个Task都拥有inputs和outputs属性，他们的类型分别为TaskInputs和TaskOutputs。
+ */
+
+//名为combineFileContent的Task从sourceDir目录中读取所有的文件，然后将每个文件的内容合并到destination.txt文件中。让我们先来看看没有定义Task输入和输出的情况：
+
+task combineFileContentNonIncremental {
+    def sources = fileTree('sourceDir')
+    def destination = file('distination.txt')
+    doLast {
+        destination.withPrintWriter{
+            writer -> sources.each {source ->
+                writer.println source.text
+            }
+        }
+    }
+}
+
+
+
+
